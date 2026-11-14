@@ -230,6 +230,5 @@ open class OfflinePlayerService : AbstractPlayerService() {
      */
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        onDestroy()
     }
 }

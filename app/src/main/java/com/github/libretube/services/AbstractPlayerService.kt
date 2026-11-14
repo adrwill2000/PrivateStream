@@ -349,6 +349,7 @@ abstract class AbstractPlayerService : MediaLibraryService(), MediaLibrarySessio
 
     override fun onCreate() {
         super.onCreate()
+        com.github.libretube.privacy.NetworkLedger.playbackActive = true
 
         notificationProvider = NowPlayingNotification(this)
         setMediaNotificationProvider(notificationProvider!!)
@@ -472,6 +473,7 @@ abstract class AbstractPlayerService : MediaLibraryService(), MediaLibrarySessio
     }
 
     override fun onDestroy() {
+        com.github.libretube.privacy.NetworkLedger.playbackActive = false
         // wait for a short time before killing the mediaSession
         // as the playerController must be released before we finish the session
         // otherwise there would be a
@@ -508,7 +510,7 @@ abstract class AbstractPlayerService : MediaLibraryService(), MediaLibrarySessio
      */
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        onDestroy()
+        com.github.libretube.privacy.PrivateSession.clearTemporaryData()
     }
 
     /**

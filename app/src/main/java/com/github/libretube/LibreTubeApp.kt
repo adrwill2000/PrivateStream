@@ -26,6 +26,7 @@ class LibreTubeApp : Application() {
          */
         PreferenceHelper.initialize(applicationContext)
         PreferenceHelper.migrate()
+        com.github.libretube.privacy.PrivateSession.initialize(this)
 
         /**
          * Set the api and the auth api url

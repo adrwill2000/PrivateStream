@@ -202,6 +202,7 @@ class SabrClient private constructor(
 
     /** HTTP Client for requesting UMP data. */
     private val client: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(com.github.libretube.privacy.NetworkLedger.interceptor("playback", true))
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("Content-Type", CONTENT_TYPE)

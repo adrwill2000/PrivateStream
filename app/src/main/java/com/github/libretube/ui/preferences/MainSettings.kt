@@ -18,10 +18,15 @@ class MainSettings : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
 
+        findPreference<Preference>("private_dashboard")?.setOnPreferenceClickListener {
+            startActivity(android.content.Intent(requireContext(), com.github.libretube.privacy.PrivacyActivity::class.java))
+            true
+        }
         val update = findPreference<Preference>("update")
         update?.summary = "v${BuildConfig.VERSION_NAME}"
 
         // check app update manually
+        update?.isEnabled = false // Upstream APK updates would replace the wrong application.
         update?.setOnPreferenceClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 UpdateChecker(requireContext()).checkUpdate(true)

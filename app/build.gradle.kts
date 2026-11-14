@@ -31,13 +31,13 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.github.libretube"
+        applicationId = "app.privatestream"
         minSdk = 26
         targetSdk = 36
         versionCode = 72
-        versionName = "32.1"
+        versionName = "0.1.0-preview"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resValue("string", "app_name", "LibreTube")
+        resValue("string", "app_name", "PrivateStream")
     }
 
     ksp {
@@ -74,7 +74,7 @@ android {
         getByName("debug") {
             isDebuggable = true
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "LibreTube Debug")
+            resValue("string", "app_name", "PrivateStream Preview")
         }
     }
 
@@ -105,6 +105,10 @@ android {
     buildFeatures {
         buildConfig = true
         resValues = true
+    }
+
+    testOptions.unitTests.all {
+        it.systemProperty("privatestream.live", providers.gradleProperty("liveExtraction").getOrElse("false"))
     }
 
     dependenciesInfo {
@@ -193,10 +197,11 @@ dependencies {
 protobuf {
     protoc {
         artifact = libs.protobuf.protoc.get().toString()
+        providers.gradleProperty("privateStreamProtoc").orNull?.let { path = it }
     }
     generateProtoTasks {
         all().forEach { task ->
-            task.plugins {
+            task.builtins {
                 //TODO: only generate kotlin code
                 id("java") {
                     option("lite")

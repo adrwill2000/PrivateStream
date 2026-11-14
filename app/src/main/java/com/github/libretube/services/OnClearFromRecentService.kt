@@ -23,8 +23,8 @@ class OnClearFromRecentService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        BackgroundHelper.stopBackgroundPlay(this)
-        nManager?.cancel(NotificationId.PLAYER_PLAYBACK.id)
+        com.github.libretube.privacy.PrivateSession.clearTemporaryData()
+        // Keep the notification for user-started playback.
         stopSelf()
     }
 }

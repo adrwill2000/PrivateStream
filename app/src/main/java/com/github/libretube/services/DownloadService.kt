@@ -107,6 +107,7 @@ class DownloadService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        com.github.libretube.privacy.NetworkLedger.downloadActive = true
         IS_DOWNLOAD_RUNNING = true
         notifyForeground()
         sendBroadcast(Intent(ACTION_SERVICE_STARTED))
@@ -289,6 +290,7 @@ class DownloadService : LifecycleService() {
         downloadProvider: DownloadProvider,
     ) {
         downloadQueue[item.id] = true
+        com.github.libretube.privacy.PublicDownloads.started(item.id)
         val notificationBuilder = getNotificationBuilder(item)
         setResumeNotification(notificationBuilder, item)
 
@@ -341,6 +343,11 @@ class DownloadService : LifecycleService() {
         withContext(Dispatchers.IO) {
             sink.flush()
             sink.close()
+        }
+        try {
+            com.github.libretube.privacy.PublicDownloads.finished(this, item.id, item.videoId)
+        } catch (error: Exception) {
+            toastFromMainThread("Saved offline; shared export failed: ${error.message}")
         }
 
         // start the next download if there are any remaining ones enqueued
@@ -651,6 +658,7 @@ class DownloadService : LifecycleService() {
     }
 
     override fun onDestroy() {
+        com.github.libretube.privacy.NetworkLedger.downloadActive = false
         downloadQueue.clear()
         IS_DOWNLOAD_RUNNING = false
         sendBroadcast(Intent(ACTION_SERVICE_STOPPED))

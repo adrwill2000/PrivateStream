@@ -50,6 +50,8 @@
         app:summary="@string/backup_restore_summary"
         app:title="@string/backup_restore" />
 
+    <Preference app:key="private_dashboard" app:title="Privacy dashboard"
+        app:summary="Session network activity and privacy defaults" />
     <PreferenceCategory>
 
         <Preference

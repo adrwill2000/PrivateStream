@@ -18,6 +18,7 @@ import java.util.Locale
 
 class UpdateChecker(private val context: Context) {
     suspend fun checkUpdate(isManualCheck: Boolean = false) {
+        if (BuildConfig.APPLICATION_ID.startsWith("app.privatestream")) return // PrivateStream has no update server.
         val currentAppVersion = BuildConfig.VERSION_NAME.filter { it.isDigit() }.toInt()
 
         try {

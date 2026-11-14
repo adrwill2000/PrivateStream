@@ -10,6 +10,7 @@ import java.io.IOException
 
 class NewPipeDownloaderImpl : Downloader() {
     private val client = OkHttpClient.Builder()
+        .addInterceptor(com.github.libretube.privacy.NetworkLedger.interceptor("extractor"))
         .build()
 
     @Throws(IOException::class, ReCaptchaException::class)

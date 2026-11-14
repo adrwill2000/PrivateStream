@@ -78,7 +78,7 @@ object ThemeHelper {
     fun changeIcon(context: Context, newLogoActivityAlias: String) {
         // Disable Old Icon(s)
         for (appIcon in IconsSheetAdapter.availableIcons) {
-            val activityClass = context.packageName.removeSuffix(".debug") + "." + appIcon.activityAlias
+            val activityClass = "com.github.libretube" + "." + appIcon.activityAlias
 
             // remove old icons
             context.packageManager.setComponentEnabledSetting(
@@ -89,7 +89,7 @@ object ThemeHelper {
         }
 
         // set the class name for the activity alias
-        val newLogoActivityClass = context.packageName.removeSuffix(".debug") + "." + newLogoActivityAlias
+        val newLogoActivityClass = "com.github.libretube" + "." + newLogoActivityAlias
         // Enable New Icon
         context.packageManager.setComponentEnabledSetting(
             ComponentName(context.packageName, newLogoActivityClass),

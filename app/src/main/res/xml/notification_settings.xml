@@ -7,7 +7,7 @@
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_notification"
             android:summary="@string/notify_new_streams_summary"
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:key="notification_toggle"
             app:title="@string/notify_new_streams" />
 

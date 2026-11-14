@@ -158,7 +158,7 @@ class PoTokenWebView private constructor(
     //region Obtaining poTokens
     suspend fun generatePoToken(identifier: String): String {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "generatePoToken() called with identifier $identifier")
+            Log.d(TAG, "generatePoToken() called")
         }
         return suspendCancellableCoroutine { continuation ->
             poTokenContinuations[identifier] = continuation
@@ -203,7 +203,7 @@ class PoTokenWebView private constructor(
     @JavascriptInterface
     fun onObtainPoTokenResult(identifier: String, poTokenU8: String) {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Generated poToken (before decoding): identifier=$identifier poTokenU8=$poTokenU8")
+            Log.d(TAG, "Generated playback token bytes")
         }
         val poToken = try {
             u8ToBase64(poTokenU8)
@@ -213,7 +213,7 @@ class PoTokenWebView private constructor(
         }
 
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Generated poToken: identifier=$identifier poToken=$poToken")
+            Log.d(TAG, "Generated playback token")
         }
         poTokenContinuations.remove(identifier)?.resume(poToken)
     }

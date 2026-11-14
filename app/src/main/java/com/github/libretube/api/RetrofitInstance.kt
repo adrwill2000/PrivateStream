@@ -58,6 +58,7 @@ object RetrofitInstance {
      */
     fun buildClient(headersAccessor: HeadersAccessor = { mapOf() }): OkHttpClient {
         val httpClient = OkHttpClient().newBuilder()
+            .addInterceptor(com.github.libretube.privacy.NetworkLedger.interceptor("api"))
 
         // add provided headers to all requests
         httpClient.addInterceptor { interceptorChain ->
@@ -72,7 +73,7 @@ object RetrofitInstance {
 
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                level = HttpLoggingInterceptor.Level.NONE
             }
 
             httpClient.addInterceptor(loggingInterceptor)

@@ -754,6 +754,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
             DownloadHelper.startDownloadDialog(requireContext(), childFragmentManager, videoId)
         }
+        binding.quickDownloadVideo.setOnClickListener {
+            if (this::streams.isInitialized) com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, false)
+        }
+        binding.quickDownloadAudio.setOnClickListener {
+            if (this::streams.isInitialized) com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, true)
+        }
 
         binding.relPlayerScreenshot.setOnClickListener {
             if (!this::streams.isInitialized) return@setOnClickListener

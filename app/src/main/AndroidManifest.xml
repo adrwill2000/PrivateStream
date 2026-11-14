@@ -21,7 +21,7 @@
 
     <application
         android:name=".LibreTubeApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:banner="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
@@ -456,6 +456,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider_paths" />
         </provider>
+        <activity android:name=".privacy.PrivacyActivity" android:exported="false" />
     </application>
 
     <queries>

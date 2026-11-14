@@ -1,174 +1,33 @@
-<div align="center">
-  <img src="assets/banners/gh-banner.png" width="auto" height="auto" alt="LibreTube">
+# PrivateStream Android
 
-[![GPL-v3](assets/widgets/license-widget.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-</div><div align="center" style="width:100%; display:flex; justify-content:space-between;">
+Personal, account-free YouTube client for a non-root Pixel 9 Pro XL. This is a GPL-3.0-or-later fork of LibreTube, not an official LibreTube release. Upstream authors, assets, LICENSE and notices are retained; see README.upstream.md.
 
-[![Matrix](assets/widgets/mat-widget.svg)](https://matrix.to/#/#LibreTube:matrix.org)
-[![Mastodon](assets/widgets/mast-widget.svg)](https://fosstodon.org/@libretube)
-[![Lemmy](assets/widgets/lemmy-widget.svg)](https://feddit.rocks/c/libretube)
+## Implemented in this preview
 
-</div>
+- Real NewPipe-based search/extraction and Media3 playback inherited from LibreTube.
+- Existing SponsorBlock, native Picture-in-Picture, background audio, local subscriptions/playlists and offline library.
+- PrivateStream application identity: app.privatestream.debug for preview installs.
+- Save video (up to 1080p by default) and Save audio buttons in portrait and landscape players. The original download options remain available.
+- Completed downloads publish to Download/PrivateStream through MediaStore on Android 10+. Audio/video pairs are muxed with Media3; originals remain available offline. If export fails, the app reports it and retains originals for manual export.
+- No analytics/telemetry integration added. Verbose HTTP logging disabled, including debug builds. Android backup disabled.
+- Search/watch history, automatic updates, remote suggestions, subscription polling, ReturnYouTubeDislike and sync disabled by default. Direct extraction/playback; no video privacy proxy.
+- Background API/images blocked. User download/media clients exempt; extractor requests permitted while a player or download service is active. This is purpose-based control, not a VPN/firewall.
+- Privacy dashboard under Settings. A bounded in-memory host/purpose/request counter stores no full URLs, queries, headers, video IDs or bodies. Separate Media3 HTTP transport is outside counter coverage.
+- Image disk caching disabled. Image memory cache, counts and temporary error text clear on normal exit/task removal. Memory is discarded by process death. Durable Room data and media remain intact.
+- Task removal no longer deliberately stops background playback. Android may still stop the process/service.
 
-> **Note** <br>
-> We don't accept feature or bug requests on these platforms. Kindly submit requests only on GitHub.
+## Build
 
-</div><div align="center" style="width:100%; display:flex; justify-content:space-between;">
+Requirements: JDK 21, Android SDK platform 36 and compatible build tools. Gradle wrapper is included. Standard Android environment: `./gradlew :app:assembleDebug :app:testDebugUnitTest`.
 
-[<img src="assets/badges/fdrload.png" alt="Get it on F-Droid" width="30%">](https://f-droid.org/en/packages/com.github.libretube/)
-[<img src="assets/badges/izzyload.png" alt="Get it on IzzyOnDroid" width="30%">](https://apt.izzysoft.de/fdroid/index/apk/com.github.libretube)<br/>
-[<img src="assets/badges/ghload.png" alt="Get it on GitHub" width="30%">](https://github.com/libre-tube/LibreTube/releases/latest)
-[<img src="assets/badges/ghload-nightly.png" alt="Get it on GitHub (Nightly)" width="30%">](https://github.com/libre-tube/LibreTube/releases/tag/nightly)
+In this workspace on Windows: `./build-private.ps1 -LiveExtraction` uses the isolated toolchain in the sibling work directory. A source-only archive does not include that toolchain: set JAVA_HOME and ANDROID_HOME for an existing installation. For a local Windows protobuf launch incompatibility, `-PprivateStreamProtoc=ABSOLUTE_PATH` optionally selects a verified protoc executable (3.20.3 used here). Protobuf's Java lite generator is configured as a builtin, not an external plugin.
 
-</div>
+Opt-in live extraction tests: add `-PliveExtraction=true`. They contact YouTube using real search and extraction; ordinary unit tests skip that test. APK: app/build/outputs/apk/debug/app-debug.apk.
 
-> **Note about Nightly builds** <br>
-> Nightly builds include features/fixes before the official release. Therefore, they are generally less stable than normal releases. Use nightly builds at your own risk.
+## Status and limits
 
-<details>
-  <summary>📜️ Credits</summary>
+This is an early debug preview, not a completed phone-verified release. The build and 12 JVM tests (including real YouTube search/stream extraction) passed during development. No device was connected to ADB. On-device playback, audio/video exports, codec compatibility, background transitions, SponsorBlock and PiP still require validation. Extraction success does not prove decoding/playback. Some videos, live streams, restricted content or YouTube changes can fail.
 
-<sub>Readme Design and Banners by [XelXen](https://github.com/XelXen)</sub> <br>
-<sub>Readme Screenshots by [ARBoyGo](https://github.com/ARBoyGo)</sub> <br>
-<sub>Readme Emoji is from [openmoji](https://openmoji.org)</sub>
+The exporter retains both a private offline copy and a public copy, increasing storage use. Removing an offline entry does not delete its public export. Muxing may take time or fail for incompatible formats. Shared downloads are not removed by clearing session data.
 
-  <summary>Icons</summary>
-
-<sub>[Default App Icon](https://github.com/libre-tube/LibreTube/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png) by [XelXen](https://github.com/XelXen)</sub> <br>
-<sub>[Boosted Bird](https://github.com/libre-tube/LibreTube/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_bird_round.png) by [Margot Albert-Heuzey](https://margotdesign.ovh)</sub>
-
-</details>
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/about.svg"
-      height="30"
-      width="30">
-</sub>
-About
-</h2>
-
-YouTube has an extremely invasive [privacy policy](https://support.google.com/youtube/answer/10364219) which relies on using user data in unethical ways. They store a lot of your personal data - ranging from ideas, music taste, content, political opinions, and much more than you think.
-
-LibreTube aims at improving the users' privacy by being independent from Google and bypassing their data collection as much as possible. The app only sends the minimum amount of data necessary to ensure that the app works, e.g. it only loads the YouTube-video you want to play without tracking your behavior when using the app.
-
-If you have questions or need help, please make sure to read the [FAQ](https://libre-tube.github.io/#faq) before asking for help at the community channels. The [Matrix room](https://matrix.to/#/#LibreTube:matrix.org) is considered as the main communication channel, all other forums or social media accounts are maintained by volunteers from the community but not the developer(s).
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/phone.svg"
-      height="30"
-      width="30">
-</sub>
-Screenshots
-</h2>
-
-<div style="width:100%; display:flex; justify-content:space-between;">
-
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_1.jpg" width=19% alt="Home">](fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_1.jpg)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_2.jpg" width=19% alt="Home">](fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_2.jpg)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_3.jpg" width=19% alt="Subscriptions">](fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_3.jpg)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_4.jpg" width=19% alt="Library">](fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_4.jpg)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_9.jpg" width=19% alt="Channel Overview">](fastlane/metadata/android/en-US/images/phoneScreenshots/Screenshot_9.jpg)
-
-* More screenshots can be found [here](https://github.com/libre-tube/LibreTube/blob/master/SCREEN_SHOT.md)
-
-</div>
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/feature.svg"
-      height="30"
-      width="30">
-</sub>
-Features
-</h2>
-
-- [x] No Ads or Tracking
-- [x] Subscriptions
-- [x] Subscription Groups
-- [x] User Playlists
-- [x] Playlist Bookmarks
-- [x] Watch/Search History
-- [x] Downloads
-- [x] Background playback
-- [x] User Accounts via [Piped](https://github.com/TeamPiped/Piped) (optional)
-- [x] [SponsorBlock](https://sponsor.ajay.app/) - skip sponsored segments in videos
-- [x] [ReturnYouTubeDislike](https://www.returnyoutubedislike.com/) - provides video dislike statistics
-- [x] [DeArrow](https://dearrow.ajay.app/) - provides better titles and thumbnails
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/community.svg"
-      height="30"
-      width="30">
-</sub>
-Contributing
-</h2>
-
-For information on how to contribute, please check the [contribution guide](./CONTRIBUTING.md).
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/donate.svg"
-      height="30"
-      width="30">
-</sub>
-Donate
-</h2>
-
-Donations can be made at:
-* <https://github.com/sponsors/Bnyro>
-* <https://liberapay.com/Bnyro>
-* Monero (XMR): 47jAx7jMFo5iqy9VgDH98qL1bSK4kr6Pxi7HKWcRwsxbVYJdjxJtyrwXeAUa5MutvcQUmWMBfvAKnPAutDHvWEymUgLm5v8
-* Ethereum (ETH): 0x599909f54CdC18B997Be8F032341d1Fb14BF4F39
-
-Contributions in any form are welcome!
-
-<h2 align="left">
-📝 Translations
-</h2>
-
-<a href="https://hosted.weblate.org/projects/libretube/#languages">
-<img src="https://hosted.weblate.org/widgets/libretube/-/287x66-grey.png" alt="Translation status" />
-</a>
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/ltvnp.svg"
-      height="30"
-      width="30">
-</sub>
-Differences to NewPipe
-</h2>
-
-LibreTube's main difference to NewPipe is that it has a much stronger focus on user experience. LibreTube uses the modern [Material 3 Expressive](https://m3.material.io) design, supports external APIs such as SponsorBlock, ReturnYouTubeDislike, or DeArrow, and allows you to synchronize your user data across devices, e.g. via Piped. <!-- TODO: replace with LibreTube sync server -->
-
-While LibreTube only supports content from YouTube, NewPipe also allows the use of other platforms like SoundCloud, PeerTube, Bandcamp and media.ccc.de.
-
-Both, LibreTube and NewPipe, are great clients for watching YouTube videos. There's no general answer about which one is better, just try them both and see which one fits you best.
-
-<h2 align="left">
-<sub>
-<img  src="assets/readme/privacy.svg"
-      height="30"
-      width="30">
-</sub>
-Privacy Policy and Disclaimer
-</h2>
-
-
-LibreTube aims to protect the privacy of its users. [Our Privacy Policy](/PRIVACY_POLICY.md) gives detailed information on which data the app stores in order to work, how it is being used, and how the project protects your personal information. It is recommended to read the privacy policy of LibreTube as well as the privacy policy of the instance you have chosen inside the app.
-
-## License
-[![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
-
-LibreTube is [Free Software](https://en.wikipedia.org/wiki/Free_software): You can use, study, share and modify it at your will. The app can be redistributed and/or modified under the terms of the
-[GNU General Public License version 3 or later](https://www.gnu.org/licenses/gpl.html) published by the
-[Free Software Foundation](https://www.fsf.org/).
-
-<div align="right">
-<table><td>
-<a href="#start-of-content">↥ Scroll to top</a>
-</td></table>
-</div>
+Source provenance, decisions, privacy scope and next validation steps: docs/BUILD_STATUS.md.

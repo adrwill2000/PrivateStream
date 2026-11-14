@@ -32,6 +32,10 @@ import java.nio.file.Path
 object ImageHelper {
     private lateinit var imageLoader: ImageLoader
 
+    fun clearSessionCache() {
+        if (::imageLoader.isInitialized) imageLoader.memoryCache?.clear()
+    }
+
     private val Context.coilFile get() = cacheDir.resolve("coil")
     private const val HTTP_SCHEME = "http"
 
@@ -40,10 +44,11 @@ object ImageHelper {
      */
     fun initializeImageLoader(context: Context) {
         val httpClient = OkHttpClient().newBuilder()
+            .addInterceptor(com.github.libretube.privacy.NetworkLedger.interceptor("images"))
 
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BASIC
+                level = HttpLoggingInterceptor.Level.NONE
             }
 
             httpClient.addInterceptor(loggingInterceptor)
@@ -57,7 +62,7 @@ object ImageHelper {
                 )
             }
             .apply {
-                diskCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.DISABLED)
                 memoryCachePolicy(CachePolicy.ENABLED)
 
                 val storageManager = context.getSystemService<StorageManager>()!!

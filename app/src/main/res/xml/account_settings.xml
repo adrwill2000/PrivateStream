@@ -45,14 +45,14 @@
     <PreferenceCategory app:title="@string/history">
 
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:icon="@drawable/ic_history_filled"
             android:summary="@string/search_history_summary"
             app:key="search_history_toggle"
             app:title="@string/search_history" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:icon="@drawable/ic_time_outlined"
             android:summary="@string/watch_history_summary"
             app:key="watch_history_toggle"

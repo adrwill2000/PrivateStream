@@ -32,7 +32,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:icon="@drawable/ic_suggestions"
             app:key="search_suggestions"
             app:title="@string/show_search_suggestions" />
@@ -59,7 +59,7 @@
     <PreferenceCategory app:title="@string/advanced">
 
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:icon="@drawable/ic_dislike"
             android:summary="@string/local_ryd_summary"
             android:title="@string/local_ryd"
