@@ -36,8 +36,8 @@ Non-fatal KSP warnings remain for missing indexes on several download foreign-ke
 2. Validate PiP, media notification controls, and background playback while screen-locked.
 3. Validate SponsorBlock with known marked content and check local subscriptions/playlists offline.
 4. Exercise the privacy policy through lifecycle transitions, redirects, and a process restart; account for Media3 traffic separately if complete dashboard coverage is needed.
-5. Revisit the KSP index warnings, pending MediaStore export recovery, and release signing before production distribution.
+5. Revisit the KSP index warnings and configure release signing before production distribution.
 
 ## Codex organization
 
-This source checkout and Git history are in the dedicated PrivateStream workspace. Codex's app tools list the workspace as **PrivateStream**, but the available project tools provide no separate sidebar registration action.
+This source checkout and Git history are in the dedicated PrivateStream workspace, registered as the **PrivateStream** Codex project. The source is published at [github.com/adrwill2000/PrivateStream](https://github.com/adrwill2000/PrivateStream).
