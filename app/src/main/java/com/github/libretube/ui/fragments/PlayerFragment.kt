@@ -52,6 +52,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.libretube.BuildConfig
 import com.github.libretube.R
 import com.github.libretube.api.JsonHelper
 import com.github.libretube.api.obj.ChapterSegment
@@ -755,10 +756,14 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             DownloadHelper.startDownloadDialog(requireContext(), childFragmentManager, videoId)
         }
         binding.quickDownloadVideo.setOnClickListener {
-            if (this::streams.isInitialized) com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, false)
+            if (this::streams.isInitialized) {
+                com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, false)
+            }
         }
         binding.quickDownloadAudio.setOnClickListener {
-            if (this::streams.isInitialized) com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, true)
+            if (this::streams.isInitialized) {
+                com.github.libretube.privacy.QuickDownload.start(requireContext(), videoId, streams, true)
+            }
         }
 
         binding.relPlayerScreenshot.setOnClickListener {

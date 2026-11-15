@@ -4,8 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
+import com.github.libretube.BuildConfig
 import com.github.libretube.db.DatabaseHolder
 import com.github.libretube.enums.FileType
 import com.github.libretube.extensions.toAndroidUri
@@ -43,6 +45,7 @@ object PublicDownloads {
                 val source = if (video != null && audio != null) {
                     val temp = File.createTempFile("export-", ".mp4", context.cacheDir)
                     temporary = temp
+                    if (BuildConfig.DEBUG) Log.d("PublicDownloads", "Starting shared audio/video export")
                     withContext(Dispatchers.Main) {
                         suspendCancellableCoroutine<Unit> { continuation ->
                             MediaExporter.muxMedia(context, audio.path.toAndroidUri(), video.path.toAndroidUri(), temp.path,
@@ -67,6 +70,7 @@ object PublicDownloads {
                         ?: error("Unable to open shared download")
                     resolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
                     prefs.edit().putString(key, uri.toString()).apply()
+                    if (BuildConfig.DEBUG) Log.d("PublicDownloads", "Shared download export completed")
                 } catch (error: Exception) {
                     resolver.delete(uri, null, null)
                     throw error

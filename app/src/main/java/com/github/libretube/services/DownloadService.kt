@@ -347,6 +347,7 @@ class DownloadService : LifecycleService() {
         try {
             com.github.libretube.privacy.PublicDownloads.finished(this, item.id, item.videoId)
         } catch (error: Exception) {
+            Log.e("PublicDownloads", "Shared download export failed (${error.javaClass.simpleName})")
             toastFromMainThread("Saved offline; shared export failed: ${error.message}")
         }
 

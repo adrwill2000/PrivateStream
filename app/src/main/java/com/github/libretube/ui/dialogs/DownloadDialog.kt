@@ -89,13 +89,14 @@ class DownloadDialog : DialogFragment() {
         binding.videoTitle.text = streams.title
 
         val videoStreams = streams.videoStreams.filter {
-            !it.url.isNullOrEmpty()
-        }.filter { !it.format.orEmpty().contains("HLS") }.sortedByDescending {
+            !it.format.isNullOrBlank() && !it.quality.isNullOrBlank() &&
+                !it.format.orEmpty().contains("HLS", ignoreCase = true)
+        }.sortedByDescending {
             it.quality.getWhileDigit()
         }
 
         val audioStreams = streams.audioStreams.filter {
-            !it.url.isNullOrEmpty()
+            !it.format.isNullOrBlank() && !it.quality.isNullOrBlank()
         }
             .sortedBy {
                 // prioritize main audio track types (lower role flag) over secondary/subbed ones

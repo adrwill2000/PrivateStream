@@ -293,7 +293,38 @@ class NewPipeMediaServiceRepository : MediaServiceRepository {
             }.getOrElse { -1 } else -1
         }
         val (resp, dislikes) = Pair(respAsync.await(), dislikesAsync.await())
-
+        val hasVideoChoice = resp.videoOnlyStreams.any { it.format != null && it.getResolution().isNotBlank() } ||
+            resp.videoStreams.any { it.format != null && it.getResolution().isNotBlank() }
+        val hasAudioChoice = resp.audioStreams.any { it.format != null && it.averageBitrate > 0 }
+        val rawFallback = if (hasVideoChoice && hasAudioChoice) null else runCatching {
+            NewPipeExtractorInstance.extractor
+                .getStreamExtractor("$YOUTUBE_FRONTEND_URL/watch?v=$videoId")
+                .apply { fetchPage() }
+        }.getOrNull()
+        val videoOnlySources = resp.videoOnlyStreams
+            .filter { it.format != null && it.getResolution().isNotBlank() }
+            .ifEmpty {
+                rawFallback?.videoOnlyStreams.orEmpty()
+                    .filter { it.format != null && it.getResolution().isNotBlank() }
+            }
+        val muxedVideoSources = resp.videoStreams
+            .filter { it.format != null && it.getResolution().isNotBlank() }
+            .ifEmpty {
+                rawFallback?.videoStreams.orEmpty()
+                    .filter { it.format != null && it.getResolution().isNotBlank() }
+            }
+        val downloadableVideoStreams = if (videoOnlySources.isNotEmpty()) {
+            videoOnlySources.map { it.toPipedStream().copy(videoOnly = true) }
+        } else {
+            // Some extractor clients expose only muxed streams; retain those as a usable download choice.
+            muxedVideoSources.map { it.toPipedStream().copy(videoOnly = false) }
+        }
+        val downloadableAudioStreams = resp.audioStreams
+            .filter { it.format != null && it.averageBitrate > 0 }
+            .ifEmpty {
+                rawFallback?.audioStreams.orEmpty()
+                    .filter { it.format != null && it.averageBitrate > 0 }
+            }
         Streams(
             title = resp.name,
             description = resp.description.content,
@@ -333,9 +364,8 @@ class NewPipeMediaServiceRepository : MediaServiceRepository {
                     start = it.startTimeSeconds.toLong()
                 )
             },
-            audioStreams = resp.audioStreams.map { it.toPipedStream() },
-            videoStreams = resp.videoOnlyStreams.map { it.toPipedStream().copy(videoOnly = true,) },
-                    //+ resp.videoStreams.map { it.toPipedStream().copy(videoOnly = false) },
+            audioStreams = downloadableAudioStreams.map { it.toPipedStream() },
+            videoStreams = downloadableVideoStreams,
             previewFrames = resp.previewFrames.map {
                 PreviewFrames(
                     it.urls,
